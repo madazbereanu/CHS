@@ -7,13 +7,12 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/row_edit_categories"
+        android:id="@+id/row_edit_categories_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="150dp"
-        android:text="TextView"
+        android:layout_marginTop="10dp"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,7 +25,7 @@
         android:id="@+id/save_edit_categories"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
         android:background="@android:color/transparent"
@@ -43,7 +42,7 @@
         android:id="@+id/remove_edit_categories"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="10dp"
         android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
