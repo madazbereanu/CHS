@@ -5,17 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Build;
-import android.util.Log;
 
-import androidx.annotation.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static android.content.ContentValues.TAG;
-
-public class KeepFreshDatabaseHelper extends SQLiteOpenHelper
+public class CategoryDatabaseHelper extends SQLiteOpenHelper
 {
     //database
     private static final String DATABASE_NAME = "DatabaseKeepFresh";
@@ -37,16 +28,16 @@ public class KeepFreshDatabaseHelper extends SQLiteOpenHelper
     private static final String COLUMN_ID_CATEGORY = "id";
     private static final String COLUMN_NAME_CATEGORY = "name";
 
-    private static KeepFreshDatabaseHelper sInstance;
+    private static CategoryDatabaseHelper sInstance;
 
-    public static synchronized KeepFreshDatabaseHelper getInstance(Context context) {
+    public static synchronized CategoryDatabaseHelper getInstance(Context context) {
         if (sInstance == null) {
-            sInstance = new KeepFreshDatabaseHelper(context.getApplicationContext());
+            sInstance = new CategoryDatabaseHelper(context.getApplicationContext());
         }
         return sInstance;
     }
 
-    public KeepFreshDatabaseHelper(Context context) {
+    public CategoryDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         SQLiteDatabase db = this.getWritableDatabase();
     }
