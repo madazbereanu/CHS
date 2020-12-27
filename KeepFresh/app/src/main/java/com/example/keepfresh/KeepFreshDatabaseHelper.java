@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class CategoryDatabaseHelper extends SQLiteOpenHelper
+public class KeepFreshDatabaseHelper extends SQLiteOpenHelper
 {
     //database
     private static final String DATABASE_NAME = "DatabaseKeepFresh";
@@ -20,7 +20,7 @@ public class CategoryDatabaseHelper extends SQLiteOpenHelper
     private static final String COLUMN_ID_PRODUCT = "id";
     private static final String COLUMN_NAME_PRODUCT = "name";
     private static final String COLUMN_CATEGORY_PRODUCT = "category";
-    private static final String COLUMN_EXPIRY_DATE_PRODUCT = "expiry_date";
+    private static final String COLUMN_EXPIRY_DATE_PRODUCT = "expiry_data";
     private static final String COLUMN_QUANTITY_PRODUCT = "quantity";
     private static final String COLUMN_IMAGE_PRODUCT = "image";
 
@@ -28,16 +28,16 @@ public class CategoryDatabaseHelper extends SQLiteOpenHelper
     private static final String COLUMN_ID_CATEGORY = "id";
     private static final String COLUMN_NAME_CATEGORY = "name";
 
-    private static CategoryDatabaseHelper sInstance;
+    private static KeepFreshDatabaseHelper sInstance;
 
-    public static synchronized CategoryDatabaseHelper getInstance(Context context) {
+    public static synchronized KeepFreshDatabaseHelper getInstance(Context context) {
         if (sInstance == null) {
-            sInstance = new CategoryDatabaseHelper(context.getApplicationContext());
+            sInstance = new KeepFreshDatabaseHelper(context.getApplicationContext());
         }
         return sInstance;
     }
 
-    public CategoryDatabaseHelper(Context context) {
+    public KeepFreshDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         SQLiteDatabase db = this.getWritableDatabase();
     }
@@ -78,6 +78,16 @@ public class CategoryDatabaseHelper extends SQLiteOpenHelper
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("select * from " + TABLE_CATEGORIES_NAME, null);
         return res;
+    }
+
+    public void addProduct(String productName,
+                           String productCategory,
+                           String productExpiryData,
+                           String productQuantity,
+                           byte[] image)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String sql = "";
     }
 
 //    public boolean updateCategory(String categoryId, String categoryName)

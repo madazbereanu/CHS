@@ -2,30 +2,19 @@ package com.example.keepfresh;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
-import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class AddActivity extends AppCompatActivity
@@ -39,26 +28,14 @@ public class AddActivity extends AppCompatActivity
     private EditText productExpiryDate;
     private Button buttonCancel;
     private Button buttonSave;
+    private ImageView imageViewCamera;
     private static final int CAMERA_REQUEST_CODE = 1;
-//    private StorageReference storage;
-//    private ProgressDialog progressDialog;
-
-//    private ImageButton buttonCalendar;
-//    private EditText expiryDateField;
-//    private DatePickerDialog datePickerDialog;
-//    private int year;
-//    private int month;
-//    private int day;
-//    private Calendar calendar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
-
-//        storage = FirebaseStorage.getInstance().getReference();
-//        progressDialog = new ProgressDialog(this);
 
         buttonCamera = (ImageButton) findViewById(R.id.button_camera);
         buttonCancel = (Button) findViewById(R.id.button_cancel);
@@ -70,9 +47,23 @@ public class AddActivity extends AppCompatActivity
         productName = (EditText) findViewById(R.id.name_field);
         productCategory = (Spinner) findViewById(R.id.category_spinner);
         productExpiryDate = (EditText) findViewById(R.id.calendar_field);
+        imageViewCamera = (ImageView) findViewById(R.id.image_view_camera);
 
         populateSpinnerCategories();
 
+        buttonDecrease.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                decrease();
+            }
+        });
+
+        buttonIncrease.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                increase();
+            }
+        });
 //        buttonCalendar = findViewById(R.id.calendar_button);
 //        expiryDateField = findViewById(R.id.expiry_date);
 //
@@ -115,6 +106,20 @@ public class AddActivity extends AppCompatActivity
                 openMainActivity();
             }
         });
+    }
+
+    private void increase() {
+        int quantity = Integer.parseInt(productQuantity.getText().toString());
+        quantity ++;
+        productQuantity.setText(String.valueOf(quantity));
+    }
+
+    private void decrease() {
+        int quantity = Integer.parseInt(productQuantity.getText().toString());
+        if(quantity > 0) {
+            quantity--;
+            productQuantity.setText(String.valueOf(quantity));
+        }
     }
 
     private void populateSpinnerCategories() {
