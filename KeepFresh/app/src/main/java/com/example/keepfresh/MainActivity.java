@@ -3,6 +3,7 @@ package com.example.keepfresh;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,6 +12,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -60,13 +64,29 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void populateSpinnerCategories() {
-        String[] categories = {"Food", "Drink", "Pill"};
-        ArrayAdapter<String> categoriesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
+//        String[] categories = {"Food", "Drink", "Pill"};
+        ArrayAdapter<String> categoriesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getAllCategories());
         categoriesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategories.setAdapter(categoriesAdapter);
 //        ArrayAdapter<String> categoriesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.categories_array));
 //        categoriesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 //        spinnerCategories.setAdapter(categoriesAdapter);
+    }
+    public List<String> getAllCategories()
+    {
+        KeepFreshDatabaseHelper keepFreshDatabaseHelper = KeepFreshDatabaseHelper.getInstance(this);
+        Cursor res = keepFreshDatabaseHelper.getAllCategories();
+        if(res.getCount() == 0)
+        {
+            //show message no data available
+        }
+        List<String> values = new ArrayList<>();
+        while (res.moveToNext()){
+            values.add(res.getString(1));
+        }
+
+        return values;
+//        listViewCategories.setAdapter(new EditCategoriesCustomAdapter(this, values));
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {

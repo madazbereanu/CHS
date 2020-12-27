@@ -6,10 +6,12 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -22,19 +24,21 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class AddActivity extends AppCompatActivity
 {
     private ImageButton buttonCamera;
-//    private ImageButton buttonDecrease;
-//    private ImageButton buttonIncrease;
-//    private EditText productQuantity;
-//    private EditText productName;
-//    private Spinner productCategory;
-//    private EditText productExpiryDate;
+    private ImageButton buttonDecrease;
+    private ImageButton buttonIncrease;
+    private EditText productQuantity;
+    private EditText productName;
+    private Spinner productCategory;
+    private EditText productExpiryDate;
     private Button buttonCancel;
-//    private Button buttonSave;
+    private Button buttonSave;
     private static final int CAMERA_REQUEST_CODE = 1;
 //    private StorageReference storage;
 //    private ProgressDialog progressDialog;
@@ -58,14 +62,16 @@ public class AddActivity extends AppCompatActivity
 
         buttonCamera = (ImageButton) findViewById(R.id.button_camera);
         buttonCancel = (Button) findViewById(R.id.button_cancel);
-//        buttonSave = (Button) findViewById(R.id.button_save);
-//        buttonDecrease = (ImageButton) findViewById(R.id.decrease_button);
-//        buttonIncrease = (ImageButton) findViewById(R.id.increase_button);
-//
-//        productQuantity = (EditText) findViewById(R.id.quantity_field);
-//        productName = (EditText) findViewById(R.id.name);
-//        productCategory = (Spinner) findViewById(R.id.category_spinner);
-//        productExpiryDate = (EditText) findViewById(R.id.expiry_date);
+        buttonSave = (Button) findViewById(R.id.button_save);
+        buttonDecrease = (ImageButton) findViewById(R.id.decrease_button);
+        buttonIncrease = (ImageButton) findViewById(R.id.increase_button);
+
+        productQuantity = (EditText) findViewById(R.id.quantity_field);
+        productName = (EditText) findViewById(R.id.name_field);
+        productCategory = (Spinner) findViewById(R.id.category_spinner);
+        productExpiryDate = (EditText) findViewById(R.id.calendar_field);
+
+        populateSpinnerCategories();
 
 //        buttonCalendar = findViewById(R.id.calendar_button);
 //        expiryDateField = findViewById(R.id.expiry_date);
@@ -111,6 +117,31 @@ public class AddActivity extends AppCompatActivity
         });
     }
 
+    private void populateSpinnerCategories() {
+//        String[] categories = {"Food", "Drink", "Pill"};
+        ArrayAdapter<String> categoriesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getAllCategories());
+        categoriesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        productCategory.setAdapter(categoriesAdapter);
+//        ArrayAdapter<String> categoriesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.categories_array));
+//        categoriesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        spinnerCategories.setAdapter(categoriesAdapter);
+    }
+    public List<String> getAllCategories()
+    {
+        KeepFreshDatabaseHelper keepFreshDatabaseHelper = KeepFreshDatabaseHelper.getInstance(this);
+        Cursor res = keepFreshDatabaseHelper.getAllCategories();
+        if(res.getCount() == 0)
+        {
+            //show message no data available
+        }
+        List<String> values = new ArrayList<>();
+        while (res.moveToNext()){
+            values.add(res.getString(1));
+        }
+
+        return values;
+//        listViewCategories.setAdapter(new EditCategoriesCustomAdapter(this, values));
+    }
     private void openMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);

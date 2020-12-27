@@ -9,14 +9,16 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
 public class EditCategoriesCustomAdapter extends BaseAdapter {
 
     private static LayoutInflater inflater = null;
 
     private Context context;
-    private String[] categoryName;
+    private List<String> categoryName;
 
-    public EditCategoriesCustomAdapter(Context context, String[] categoryName)
+    public EditCategoriesCustomAdapter(Context context, List<String> categoryName)
     {
         this.categoryName = categoryName;
         this.context = context;
@@ -25,7 +27,7 @@ public class EditCategoriesCustomAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return categoryName.length;
+        return categoryName.size();
     }
 
     @Override
@@ -55,13 +57,13 @@ public class EditCategoriesCustomAdapter extends BaseAdapter {
         holder.saveEditCategories = rowView.findViewById(R.id.save_edit_categories);
         holder.removeEditCategories = rowView.findViewById(R.id.remove_edit_categories);
 
-        holder.rowEditCategories.setText(categoryName[position]);
+        holder.rowEditCategories.setText(categoryName.get(position));
 
         rowView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                Toast.makeText(context, "You Clicked "+categoryName[position], Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "You Clicked "+categoryName.get(position), Toast.LENGTH_LONG).show();
             }
         });
         return rowView;

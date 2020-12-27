@@ -1,30 +1,116 @@
-//package com.example.keepfresh;
+package com.example.keepfresh;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
+import android.util.Log;
+
+import androidx.annotation.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static android.content.ContentValues.TAG;
+
+public class KeepFreshDatabaseHelper extends SQLiteOpenHelper
+{
+    //database
+    private static final String DATABASE_NAME = "DatabaseKeepFresh";
+    public static final int DATABASE_VERSION = 1;
+
+    //table names
+    private static final String TABLE_PRODUCTS_NAME = "product";
+    private static final String TABLE_CATEGORIES_NAME = "category";
+
+    //columns for PRODUCT table
+    private static final String COLUMN_ID_PRODUCT = "id";
+    private static final String COLUMN_NAME_PRODUCT = "name";
+    private static final String COLUMN_CATEGORY_PRODUCT = "category";
+    private static final String COLUMN_EXPIRY_DATE_PRODUCT = "expiry_date";
+    private static final String COLUMN_QUANTITY_PRODUCT = "quantity";
+    private static final String COLUMN_IMAGE_PRODUCT = "image";
+
+    //columns for CATEGORY table
+    private static final String COLUMN_ID_CATEGORY = "id";
+    private static final String COLUMN_NAME_CATEGORY = "name";
+
+    private static KeepFreshDatabaseHelper sInstance;
+
+    public static synchronized KeepFreshDatabaseHelper getInstance(Context context) {
+        if (sInstance == null) {
+            sInstance = new KeepFreshDatabaseHelper(context.getApplicationContext());
+        }
+        return sInstance;
+    }
+
+    public KeepFreshDatabaseHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        SQLiteDatabase db = this.getWritableDatabase();
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        final String CREATE_CATEGORIES_TABLE = "CREATE TABLE " +
+                TABLE_CATEGORIES_NAME + " (" +
+                COLUMN_ID_CATEGORY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_NAME_CATEGORY + " TEXT NOT NULL" +
+                ");";
+
+        db.execSQL(CREATE_CATEGORIES_TABLE);
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORIES_NAME);
+        onCreate(db);
+    }
+
+        // Insert a post into the database
+    public boolean addCategory(String category) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_NAME_CATEGORY, category);
+
+        long result = db.insert(TABLE_CATEGORIES_NAME, null, contentValues);
+
+        if(result == -1)
+            return false;
+        return true;
+    }
+
+    public Cursor getAllCategories()
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select * from " + TABLE_CATEGORIES_NAME, null);
+        return res;
+    }
+
+//    public boolean updateCategory(String categoryId, String categoryName)
+//    {
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        ContentValues contentValues = new ContentValues();
+//        contentValues.put(COLUMN_ID_CATEGORY, categoryId);
+//        contentValues.put(COLUMN_NAME_CATEGORY, categoryName);
 //
-//import android.content.ContentValues;
-//import android.content.Context;
-//import android.database.Cursor;
-//import android.database.sqlite.SQLiteDatabase;
-//import android.database.sqlite.SQLiteOpenHelper;
-//import android.util.Log;
-//
-//import androidx.annotation.Nullable;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//import static android.content.ContentValues.TAG;
-//
-//public class KeepFreshDatabaseHelper extends SQLiteOpenHelper
-//{
+//        db.update(TABLE_CATEGORIES_NAME, contentValues, "id = ?", new String[]{categoryId});
+//        return true;
+//    }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
 //    //database
-//    private static final String DATABASE_NAME = "database.db";
+//    private static final String DATABASE_NAME = "Database";
 //    public static final int DATABASE_VERSION = 1;
 //
 //    //table names
 //    private static final String TABLE_PRODUCTS_NAME = "products";
 //    private static final String TABLE_CATEGORIES_NAME = "categories";
 //
-//    //columns for product table
+//    //columns for PRODUCT table
 //    private static final String COLUMN_ID_PRODUCT = "id";
 //    private static final String COLUMN_NAME_PRODUCT = "name";
 //    private static final String COLUMN_CATEGORY_PRODUCT = "category";
@@ -32,7 +118,7 @@
 //    private static final String COLUMN_QUANTITY_PRODUCT = "quantity";
 //    private static final String COLUMN_IMAGE_PRODUCT = "image";
 //
-//    //columns for category table
+//    //columns for CATEGORY table
 //    private static final String COLUMN_ID_CATEGORY = "id";
 //    private static final String COLUMN_NAME_CATEGORY = "name";
 //
@@ -191,4 +277,4 @@
 //        }
 //        return posts;
 //    }
-//}
+}
