@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "471886611892",
+    "firebase_url": "https://keep-fresh-c203e.firebaseio.com",
+    "project_id": "keep-fresh-c203e",
+    "storage_bucket": "keep-fresh-c203e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:471886611892:android:5a93e7da77d4f3db691ee1",
+        "android_client_info": {
+          "package_name": "com.example.keepfresh"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "471886611892-fr19c7eaqbd3dsl9lp00roret975sl6h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBaj0Iyyt21T05F3avJCyzJIB5K9KNUqao"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "471886611892-fr19c7eaqbd3dsl9lp00roret975sl6h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
