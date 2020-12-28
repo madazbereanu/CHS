@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -18,42 +19,22 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity
 {
-//    private Toolbar toolbar;
-//    private TextView toolbarText;
-
     private Spinner spinnerCategories;
     private ImageButton buttonAdd;
+    private ListView listViewProducts;
+    private KeepFreshDatabaseHelper keepFreshDatabaseHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        toolbar=findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//        toolbarText = findViewById(R.id.toolbar_text);
-//        if(toolbarText!=null && toolbar!=null)
-//        {
-//            toolbarText.setText(getTitle());
-//            setSupportActionBar(toolbar);
-//        }
+        keepFreshDatabaseHelper = KeepFreshDatabaseHelper.getInstance(this);
+//        listViewProducts = findViewById(R.id.product_list_view);
+        buttonAdd = findViewById(R.id.add_button);
 
-//        setSupportActionBar(toolbar);
-//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                finish();
-//            }
-//        });
-//
-//        if(toolbarText!=null && toolbar!=null) {
-//            toolbarText.setText(getTitle());
-//            setSupportActionBar(toolbar);
-//        }
-
-        spinnerCategories=findViewById(R.id.spinner_categories);
+        spinnerCategories = findViewById(R.id.spinner_categories);
         populateSpinnerCategories();
 
-        buttonAdd = findViewById(R.id.add_button);
         buttonAdd.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -64,17 +45,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void populateSpinnerCategories() {
-//        String[] categories = {"Food", "Drink", "Pill"};
         ArrayAdapter<String> categoriesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getAllCategories());
         categoriesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategories.setAdapter(categoriesAdapter);
-//        ArrayAdapter<String> categoriesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.categories_array));
-//        categoriesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        spinnerCategories.setAdapter(categoriesAdapter);
     }
     public List<String> getAllCategories()
     {
-        KeepFreshDatabaseHelper keepFreshDatabaseHelper = KeepFreshDatabaseHelper.getInstance(this);
         Cursor res = keepFreshDatabaseHelper.getAllCategories();
         if(res.getCount() == 0)
         {
@@ -86,9 +62,21 @@ public class MainActivity extends AppCompatActivity
         }
 
         return values;
-//        listViewCategories.setAdapter(new EditCategoriesCustomAdapter(this, values));
     }
 
+    public void viewAllProducts(){
+        Cursor res = keepFreshDatabaseHelper.getAllProducts();
+        if(res.getCount() == 0){
+            //show message no data available
+        }
+        List<String> values = new ArrayList<>();
+        List<String> values1 = new ArrayList<>();
+        while (res.moveToNext()){
+            values.add(res.getString(1));
+            values1.add(res.getString(2));
+        }
+//        listViewProducts.setAdapter(new ProductsCustomAdapter(this, values, values1));
+    }
     public boolean onCreateOptionsMenu(Menu menu) {
 //         Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_menu, menu);
@@ -114,19 +102,4 @@ public class MainActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.setting:
-//                 User chose the "Settings" item, show the app settings UI...
-//                return true;
-//
-//
-//            default:
-//                 If we got here, the user's action was not recognized.
-//                 Invoke the superclass to handle it.
-//                return super.onOptionsItemSelected(item);
-//
-//        }
-//    }
-   }
+}

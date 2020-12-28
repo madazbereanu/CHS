@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +19,7 @@ public class ShoppingListActivity extends AppCompatActivity
     private EditText itemName;
     private Button addButton;
     private ListView listView;
+    private ArrayAdapter<String> adp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,14 +54,13 @@ public class ShoppingListActivity extends AppCompatActivity
             for (Post post : posts) {
                 items.add(post.item.name);
             }
-//        ArrayAdapter<String> adp = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
-            ArrayAdapter<String> adp = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, items);
+            adp = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, items);
             listView.setAdapter(adp);
+            adp.notifyDataSetChanged();
         }catch (Exception e)
         {
 
         }
-//        databaseHelper.deleteAllPostsAndItems();
     }
 
     public void AddData(String newEntry)
@@ -90,9 +89,6 @@ public class ShoppingListActivity extends AppCompatActivity
             for (Post post : posts) {
                 items.add(post.item.name);
             }
-//        ArrayAdapter<String> adp = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
-            ArrayAdapter<String> adp = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, items);
-            listView.setAdapter(adp);
         }catch (Exception e)
         {
 

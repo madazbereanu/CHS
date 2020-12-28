@@ -2,8 +2,10 @@ package com.example.keepfresh;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
@@ -13,29 +15,39 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AddActivity extends AppCompatActivity
 {
+    private static final int CAMERA_REQUEST_CODE = 1;
+
+    private ImageView imageViewCamera;
+
     private ImageButton buttonCamera;
     private ImageButton buttonDecrease;
     private ImageButton buttonIncrease;
-    private EditText productQuantity;
-    private EditText productName;
-    private Spinner productCategory;
-    private EditText productExpiryDate;
     private Button buttonCancel;
     private Button buttonSave;
-    private ImageView imageViewCamera;
-    private static final int CAMERA_REQUEST_CODE = 1;
+
+    private EditText productQuantity;
+    private EditText productName;
+    private EditText productExpiryDate;
+
+    private Spinner productCategory;
+
+    private KeepFreshDatabaseHelper keepFreshDatabaseHelper;
+    private Bitmap image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
+
+        imageViewCamera = (ImageView) findViewById(R.id.image_view_camera);
 
         buttonCamera = (ImageButton) findViewById(R.id.button_camera);
         buttonCancel = (Button) findViewById(R.id.button_cancel);
@@ -47,9 +59,24 @@ public class AddActivity extends AppCompatActivity
         productName = (EditText) findViewById(R.id.name_field);
         productCategory = (Spinner) findViewById(R.id.category_spinner);
         productExpiryDate = (EditText) findViewById(R.id.calendar_field);
-        imageViewCamera = (ImageView) findViewById(R.id.image_view_camera);
+
+        keepFreshDatabaseHelper = KeepFreshDatabaseHelper.getInstance(this);
 
         populateSpinnerCategories();
+
+        buttonCamera.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                openCamera();
+            }
+        });
+
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openMainActivity();
+            }
+        });
 
         buttonDecrease.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,48 +91,44 @@ public class AddActivity extends AppCompatActivity
                 increase();
             }
         });
-//        buttonCalendar = findViewById(R.id.calendar_button);
-//        expiryDateField = findViewById(R.id.expiry_date);
-//
-//        findViewById(R.id.calendar_button).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                showDatePickerDialog();
-//            }
-//        });
 
-//        buttonCalendar.setOnClickListener(new View.OnClickListener() {
-//          @Override
-//          public void onClick(View v) {
-//              calendar = Calendar.getInstance();
-//              year = calendar.get(Calendar.YEAR);
-//              month = calendar.get(Calendar.MONTH);
-//              day = calendar.get(Calendar.DAY_OF_MONTH);
-//              datePickerDialog = new DatePickerDialog(AddActivity.this,
-//                      new DatePickerDialog.OnDateSetListener() {
-//                          @Override
-//                          public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-//                              expiryDateField.setText(dayOfMonth + "/" + month + "/" + year);
-//                          }
-//                      }, year, month, day);
-//              datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
-//              datePickerDialog.show();
-//          }
-//        });
-
-
-        buttonCamera.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                openCamera();
-            }
-        });
-        buttonCancel.setOnClickListener(new View.OnClickListener() {
+        buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openMainActivity();
+                String newProductName = productName.getText().toString();
+                String newProductCategory = productCategory.getSelectedItem().toString();
+                String newProductExpiryData = productExpiryDate.getText().toString();
+                String newProductQuantity = productQuantity.getText().toString();
+                Bitmap newProductImage = image;
+
+                if(newProductName.length() != 0 &&
+                newProductCategory.length() != 0 &&
+                newProductExpiryData.length() != 0 &&
+                newProductQuantity.length() != 0 &&
+                newProductImage != null){
+                    AddProduct(newProductName, newProductCategory, newProductExpiryData, newProductQuantity, newProductImage);
+                    productName.setText("");
+                    productExpiryDate.setText("");
+                    productQuantity.setText("");
+                    imageViewCamera.setImageBitmap(null);
+                }
+                else
+                {
+                    Toast.makeText(AddActivity.this,"Must put something in text field!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+
+    }
+
+    private void AddProduct(String newProductName, String newProductCategory, String newProductExpiryData, String newProductQuantity, Bitmap newProductImage) {
+        boolean isInserted = keepFreshDatabaseHelper.addProduct(newProductName, newProductCategory, newProductExpiryData, newProductQuantity, newProductImage);
+
+        if(isInserted) {
+            Toast.makeText(AddActivity.this, "Product added", Toast.LENGTH_SHORT).show();
+        }
+        else
+            Toast.makeText(AddActivity.this, "Product not added", Toast.LENGTH_SHORT).show();
     }
 
     private void increase() {
@@ -123,17 +146,12 @@ public class AddActivity extends AppCompatActivity
     }
 
     private void populateSpinnerCategories() {
-//        String[] categories = {"Food", "Drink", "Pill"};
         ArrayAdapter<String> categoriesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getAllCategories());
         categoriesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         productCategory.setAdapter(categoriesAdapter);
-//        ArrayAdapter<String> categoriesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.categories_array));
-//        categoriesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        spinnerCategories.setAdapter(categoriesAdapter);
     }
     public List<String> getAllCategories()
     {
-        KeepFreshDatabaseHelper keepFreshDatabaseHelper = KeepFreshDatabaseHelper.getInstance(this);
         Cursor res = keepFreshDatabaseHelper.getAllCategories();
         if(res.getCount() == 0)
         {
@@ -145,8 +163,9 @@ public class AddActivity extends AppCompatActivity
         }
 
         return values;
-//        listViewCategories.setAdapter(new EditCategoriesCustomAdapter(this, values));
     }
+
+
     private void openMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
@@ -157,51 +176,27 @@ public class AddActivity extends AppCompatActivity
         try
         {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                    intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(intent, CAMERA_REQUEST_CODE);
-
+            if(intent.resolveActivity(getPackageManager()) != null) {
+                startActivityForResult(intent, CAMERA_REQUEST_CODE);
+            }
         }
         catch (Exception e)
         {
+            Toast.makeText(AddActivity.this, e.toString(), Toast.LENGTH_LONG).show();
 
         }
     }
-//    private void showDatePickerDialog() {
-//        DatePickerDialog datePickerDialog = new DatePickerDialog(
-//                this,
-//                this,
-//                Calendar.getInstance().get(Calendar.YEAR),
-//                Calendar.getInstance().get(Calendar.MONTH),
-//                Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
-//        datePickerDialog.show();
-//    }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if(requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK)
-//        {
-//            progressDialog.setMessage("Uploading Image ...");
-//            progressDialog.show();
-//
-//            Uri uri = data.getData();
-//            StorageReference filePath = storage.child("Photos").child(uri.getLastPathSegment());
-//            filePath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>(){
-//
-//                @Override
-//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                    progressDialog.dismiss();
-//                    Toast.makeText(AddActivity.this, "Uploading Finished ...", Toast.LENGTH_SHORT);
-//                }
-//            });
-//        }
-//    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-//    @Override
-//    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-//        String date = "month/day/year: " + month + "/" + dayOfMonth + "/" + year;
-//        expiryDateField.setText(date);
-//    }
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK)
+        {
+            Bundle extras = data.getExtras();
+            image = (Bitmap) extras.get("data");
+            imageViewCamera.setImageBitmap(image);
+        }
+    }
 }
