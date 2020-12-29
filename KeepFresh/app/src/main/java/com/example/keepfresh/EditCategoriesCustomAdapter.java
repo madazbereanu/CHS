@@ -12,6 +12,7 @@ import android.widget.Toast;
 import java.util.List;
 
 public class EditCategoriesCustomAdapter extends BaseAdapter {
+    //TO DO: add functionality to edit and remove button
 
     private static LayoutInflater inflater = null;
 

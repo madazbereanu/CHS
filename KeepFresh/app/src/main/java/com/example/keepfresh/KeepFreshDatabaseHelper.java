@@ -10,9 +10,15 @@ import android.graphics.Matrix;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class KeepFreshDatabaseHelper extends SQLiteOpenHelper
 {
+    //TO DO: add just unique products and categories
+
     private static final float PREFERRED_WIDTH = 250;
     private static final float PREFERRED_HEIGHT = 250;
 
@@ -79,13 +85,25 @@ public class KeepFreshDatabaseHelper extends SQLiteOpenHelper
     }
 
         // Insert a post into the database
-    public boolean addCategory(String category) {
+    public boolean addCategory(String categoryName) {
         SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_NAME_CATEGORY, category);
-
-        long result = db.insert(TABLE_CATEGORIES_NAME, null, contentValues);
+        long result = -1;
+//
+//        Cursor res = getAllCategories();
+//        if(res.getCount() == 0)
+//        {
+//            show message no data available
+//        }
+//        List<String> values = new ArrayList<>();
+//        while (res.moveToNext()){
+//            values.add(res.getString(1));
+//        }
+//
+//        if(!values.contains(categoryName)) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(COLUMN_NAME_CATEGORY, categoryName);
+            result = db.insert(TABLE_CATEGORIES_NAME, null, contentValues);
+//        }
 
         if(result == -1)
             return false;
@@ -124,7 +142,7 @@ public class KeepFreshDatabaseHelper extends SQLiteOpenHelper
     public Cursor getAllProducts()
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("select " + COLUMN_NAME_PRODUCT + ", " + COLUMN_IMAGE_PRODUCT + " from " + TABLE_PRODUCTS_NAME, null);
+        Cursor res = db.rawQuery("select " + COLUMN_NAME_PRODUCT + ", " + COLUMN_IMAGE_PRODUCT + ", " + COLUMN_CATEGORY_PRODUCT + " from " + TABLE_PRODUCTS_NAME, null);
         return res;
     }
 

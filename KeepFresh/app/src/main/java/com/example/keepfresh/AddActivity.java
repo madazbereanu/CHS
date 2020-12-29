@@ -158,8 +158,10 @@ public class AddActivity extends AppCompatActivity
             //show message no data available
         }
         List<String> values = new ArrayList<>();
-        while (res.moveToNext()){
-            values.add(res.getString(1));
+        while (res.moveToNext()) {
+            if (!res.getString(1).equals("All")) {
+                values.add(res.getString(1));
+            }
         }
 
         return values;

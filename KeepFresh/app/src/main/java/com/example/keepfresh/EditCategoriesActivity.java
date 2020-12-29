@@ -12,9 +12,16 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class EditCategoriesActivity extends AppCompatActivity {
+    //TO DO: introduce just unique categories
+
+
+    //hardcoded values for categories
+    private static final List<String> CATEGORIES = Arrays.asList("All", "Drink", "Food");
 
     private EditText categoryName;
     private Button addNewCategoryButton;
@@ -22,7 +29,6 @@ public class EditCategoriesActivity extends AppCompatActivity {
 
     private Context context;
 
-//    private static final String[] list = new String[]{"food", "pills"};
     private KeepFreshDatabaseHelper keepFreshDatabaseHelper;
 
     @Override
@@ -36,10 +42,12 @@ public class EditCategoriesActivity extends AppCompatActivity {
         addNewCategoryButton = findViewById(R.id.add_new_category_button);
         listViewCategories = findViewById(R.id.list_view_categories);
 
-//        listViewCategories.setAdapter(new EditCategoriesCustomAdapter(this, list));
-
         keepFreshDatabaseHelper = KeepFreshDatabaseHelper.getInstance(this);
 
+//        for (String category: CATEGORIES)
+//        {
+//            AddData(category);
+//        }
         addNewCategoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,7 +88,7 @@ public class EditCategoriesActivity extends AppCompatActivity {
         while (res.moveToNext()){
             values.add(res.getString(1));
         }
-
+        Collections.sort(values);
         listViewCategories.setAdapter(new EditCategoriesCustomAdapter(this, values));
     }
 
