@@ -142,7 +142,7 @@ public class KeepFreshDatabaseHelper extends SQLiteOpenHelper
     public Cursor getAllProducts()
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("select " + COLUMN_NAME_PRODUCT + ", " + COLUMN_IMAGE_PRODUCT + ", " + COLUMN_CATEGORY_PRODUCT + " from " + TABLE_PRODUCTS_NAME, null);
+        Cursor res = db.rawQuery("select " + COLUMN_NAME_PRODUCT + ", " + COLUMN_IMAGE_PRODUCT + ", " + COLUMN_CATEGORY_PRODUCT + ", "+ COLUMN_EXPIRY_DATE_PRODUCT + " from " + TABLE_PRODUCTS_NAME, null);
         return res;
     }
 
