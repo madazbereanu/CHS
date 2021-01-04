@@ -13,13 +13,20 @@
         tools:layout_editor_absoluteX="25dp"
         tools:layout_editor_absoluteY="24dp">
 
+        <TextView
+            android:id="@+id/add_new_category_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:textSize="20sp"
+            android:text="Enter a new category" />
+
         <EditText
             android:id="@+id/add_new_categories_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Enter a new category" />
+            android:inputType="textPersonName"/>
 
         <Button
             android:id="@+id/add_new_category_button"
