@@ -11,14 +11,9 @@ import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-public class KeepFreshDatabaseHelper extends SQLiteOpenHelper
-{
-    //TO DO: add just unique products and categories
-
+public class KeepFreshDatabaseHelper extends SQLiteOpenHelper {
     private static final float PREFERRED_WIDTH = 250;
     private static final float PREFERRED_HEIGHT = 250;
 
@@ -73,6 +68,7 @@ public class KeepFreshDatabaseHelper extends SQLiteOpenHelper
                 COLUMN_QUANTITY_PRODUCT + " TEXT NOT NULL, " +
                 COLUMN_IMAGE_PRODUCT + " TEXT NOT NULL " +
                 ");";
+
         db.execSQL(CREATE_CATEGORIES_TABLE);
         db.execSQL(CREATE_PRODUCTS_TABLE);
     }
@@ -84,63 +80,66 @@ public class KeepFreshDatabaseHelper extends SQLiteOpenHelper
         onCreate(db);
     }
 
-        // Insert a post into the database
     public boolean addCategory(String categoryName) {
         SQLiteDatabase db = this.getWritableDatabase();
         long result = -1;
-//
-//        Cursor res = getAllCategories();
-//        if(res.getCount() == 0)
-//        {
-//            show message no data available
-//        }
-//        List<String> values = new ArrayList<>();
-//        while (res.moveToNext()){
-//            values.add(res.getString(1));
-//        }
-//
-//        if(!values.contains(categoryName)) {
+
+        Cursor res = getCategoriesName();
+        List<String> values = new ArrayList<>();
+        while (res.moveToNext()) {
+            values.add(res.getString(0));
+        }
+
+        if(!values.contains(categoryName)) {
             ContentValues contentValues = new ContentValues();
             contentValues.put(COLUMN_NAME_CATEGORY, categoryName);
             result = db.insert(TABLE_CATEGORIES_NAME, null, contentValues);
-//        }
+        }
 
         if(result == -1)
             return false;
         return true;
     }
 
-    public boolean addProduct(String nameProduct,
-                              String categoryProduct,
-                              String expiryDataProduct,
-                              String quantityProduct,
-                              Bitmap image)
-    {
+    public boolean addProduct(String nameProduct, String categoryProduct, String expiryDataProduct, String quantityProduct, Bitmap image) {
         SQLiteDatabase db = getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
+        long result = -1;
+        Cursor res = getAllProducts();
+        List<String> values = new ArrayList<>();
+        while (res.moveToNext()) {
+            values.add(res.getString(0));
+        }
 
-        String imageString = bitmapToString(resizeBitmap(image));
-        contentValues.put(COLUMN_NAME_CATEGORY, nameProduct);
-        contentValues.put(COLUMN_CATEGORY_PRODUCT, categoryProduct);
-        contentValues.put(COLUMN_EXPIRY_DATE_PRODUCT, expiryDataProduct);
-        contentValues.put(COLUMN_QUANTITY_PRODUCT, quantityProduct);
-        contentValues.put(COLUMN_IMAGE_PRODUCT, imageString);
+        if(!values.contains(nameProduct)) {
+            ContentValues contentValues = new ContentValues();
 
-        long result = db.insert(TABLE_PRODUCTS_NAME, null, contentValues);
+            String imageString = bitmapToString(resizeBitmap(image));
+            contentValues.put(COLUMN_NAME_CATEGORY, nameProduct);
+            contentValues.put(COLUMN_CATEGORY_PRODUCT, categoryProduct);
+            contentValues.put(COLUMN_EXPIRY_DATE_PRODUCT, expiryDataProduct);
+            contentValues.put(COLUMN_QUANTITY_PRODUCT, quantityProduct);
+            contentValues.put(COLUMN_IMAGE_PRODUCT, imageString);
+            result = db.insert(TABLE_PRODUCTS_NAME, null, contentValues);
+        }
 
         if(result == -1)
             return false;
-        else
-            return true;
+        return true;
     }
-    public Cursor getAllCategories()
-    {
+
+    public Cursor getAllCategories() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("select * from " + TABLE_CATEGORIES_NAME, null);
         return res;
     }
-    public Cursor getAllProducts()
-    {
+
+    public Cursor getCategoriesName() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select " + COLUMN_NAME_CATEGORY + " from " + TABLE_CATEGORIES_NAME, null);
+        return res;
+    }
+
+    public Cursor getAllProducts() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("select " + COLUMN_NAME_PRODUCT + ", " + COLUMN_IMAGE_PRODUCT + ", " + COLUMN_CATEGORY_PRODUCT + ", "+ COLUMN_EXPIRY_DATE_PRODUCT + " from " + TABLE_PRODUCTS_NAME, null);
         return res;
@@ -165,5 +164,23 @@ public class KeepFreshDatabaseHelper extends SQLiteOpenHelper
                 bitmap, 0, 0, width, height, matrix, false);
         bitmap.recycle();
         return resizedBitmap;
+    }
+
+    public void deleteAllCategories() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        db.delete(TABLE_CATEGORIES_NAME, null, null);
+        db.setTransactionSuccessful();
+
+        db.endTransaction();
+    }
+
+    public void deleteAllProducts() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        db.delete(TABLE_PRODUCTS_NAME, null, null);
+        db.setTransactionSuccessful();
+
+        db.endTransaction();
     }
 }

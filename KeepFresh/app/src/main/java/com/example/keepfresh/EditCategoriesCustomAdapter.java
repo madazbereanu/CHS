@@ -13,14 +13,12 @@ import java.util.List;
 
 public class EditCategoriesCustomAdapter extends BaseAdapter {
     //TO DO: add functionality to edit and remove button
-
     private static LayoutInflater inflater = null;
 
     private Context context;
     private List<String> categoryName;
 
-    public EditCategoriesCustomAdapter(Context context, List<String> categoryName)
-    {
+    public EditCategoriesCustomAdapter(Context context, List<String> categoryName) {
         this.categoryName = categoryName;
         this.context = context;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -41,14 +39,14 @@ public class EditCategoriesCustomAdapter extends BaseAdapter {
         return position;
     }
 
-    public class Holder{
+    public class Holder {
         TextView rowEditCategories;
         ImageButton saveEditCategories;
         ImageButton removeEditCategories;
     }
+
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent)
-    {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         Holder holder = new Holder();
         View rowView;
 

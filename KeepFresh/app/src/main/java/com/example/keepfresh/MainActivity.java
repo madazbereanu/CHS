@@ -20,23 +20,19 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-public class MainActivity extends AppCompatActivity //implements AdapterView.OnItemSelectedListener
-{
-    //TO DO: notification from products which expire
-
+public class MainActivity extends AppCompatActivity {
     private Spinner spinnerCategories;
     private ImageButton buttonAdd;
     private ListView listViewProducts;
 
     private KeepFreshDatabaseHelper keepFreshDatabaseHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +46,7 @@ public class MainActivity extends AppCompatActivity //implements AdapterView.OnI
 
         populateSpinnerCategories();
 
-        buttonAdd.setOnClickListener(new View.OnClickListener(){
+        buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, AddActivity.class);
@@ -74,58 +70,50 @@ public class MainActivity extends AppCompatActivity //implements AdapterView.OnI
         });
 
         createNotificationChannel();
-
-//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "notificationExpired")
-//                .setSmallIcon(R.drawable.ic_baseline_calendar_today_24)
-//                .setContentTitle("Keep Fresh")
-//                .setContentText("Please check the application")
-//                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-//        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-//        //
-//        notificationManager.notify(100, builder.build());
-
         expiredData();
-    }
-
-    private int getCurrentDay(){
-        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-        return calendar.get(Calendar.DATE);
     }
 
     private void expiredData(){
         Cursor res = keepFreshDatabaseHelper.getAllProducts();
-        if(res.getCount() == 0){
-            //show message no data available
-        }
         List<String> productsName = new ArrayList<>();
         List<String> productsExpiredData = new ArrayList<>();
+
         while (res.moveToNext()){
             productsName.add(res.getString(0));
             productsExpiredData.add(res.getString(3));
         }
 
-        int currentDay = getCurrentDay();
-        int dayFromExpiredData;
         for(int i = 0; i < productsExpiredData.size(); i++){
-            dayFromExpiredData = getDayFromExpiredData(productsExpiredData.get(i));
-            if((dayFromExpiredData - currentDay) <= 3){
+            if(isAlmostExpired(productsExpiredData.get(i))){
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "notificationExpired")
                         .setSmallIcon(R.drawable.ic_baseline_calendar_today_24)
                         .setContentTitle("Keep Fresh")
                         .setContentText("Please check the product with name: " + productsName.get(i))
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT);
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-                //
                 notificationManager.notify(100, builder.build());
             }
         }
     }
 
-    private int getDayFromExpiredData(String expiredData){
+    private boolean isAlmostExpired(String expiredData){
         String[] elements = expiredData.split("/");
-        return Integer.parseInt(elements[0]);
+        int expiredDay = Integer.parseInt(elements[0]);
+        int expiredMonth = Integer.parseInt(elements[1]);
+        int expiredYear = Integer.parseInt(elements[2]);
+        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+        int day = calendar.get(Calendar.DATE);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int year = calendar.get(Calendar.YEAR);
+
+        if((expiredYear - year) == 0)
+            if((expiredMonth - month) == 0)
+                if((expiredDay - day) <= 3)
+                    return true;
+        return false;
     }
-    private void createNotificationChannel(){
+
+    private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "KeepFreshChannel";
             String description = "Channel for expiry data";
@@ -139,20 +127,17 @@ public class MainActivity extends AppCompatActivity //implements AdapterView.OnI
     }
 
     private void populateSpinnerCategories() {
-
         ArrayAdapter<String> categoriesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getAllCategories());
         categoriesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategories.setAdapter(categoriesAdapter);
+        categoriesAdapter.notifyDataSetChanged();
     }
-    public List<String> getAllCategories()
-    {
+
+    public List<String> getAllCategories() {
         Cursor res = keepFreshDatabaseHelper.getAllCategories();
-        if(res.getCount() == 0)
-        {
-            //show message no data available
-        }
         List<String> values = new ArrayList<>();
-        while (res.moveToNext()){
+
+        while (res.moveToNext()) {
             values.add(res.getString(1));
         }
 
@@ -160,13 +145,11 @@ public class MainActivity extends AppCompatActivity //implements AdapterView.OnI
         return values;
     }
 
-    public void viewAllProductsFromCategory(String categoryName){
+    public void viewAllProductsFromCategory(String categoryName) {
         Cursor res = keepFreshDatabaseHelper.getAllProducts();
-        if(res.getCount() == 0){
-            //show message no data available
-        }
         List<String> values = new ArrayList<>();
         List<String> values1 = new ArrayList<>();
+
         if(categoryName.equals("All")){
             while (res.moveToNext()){
                 values.add(res.getString(0));
@@ -184,7 +167,6 @@ public class MainActivity extends AppCompatActivity //implements AdapterView.OnI
         listViewProducts.setAdapter(new ProductsCustomAdapter(this, values, values1));
     }
     public boolean onCreateOptionsMenu(Menu menu) {
-//         Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
@@ -192,6 +174,7 @@ public class MainActivity extends AppCompatActivity //implements AdapterView.OnI
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+
         if(id == R.id.setting)
         {
             Toast.makeText(getApplicationContext(), "Settings", Toast.LENGTH_LONG).show();
@@ -208,6 +191,4 @@ public class MainActivity extends AppCompatActivity //implements AdapterView.OnI
 
         return super.onOptionsItemSelected(item);
     }
-
-
 }

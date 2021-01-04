@@ -2,7 +2,6 @@ package com.example.keepfresh;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -64,7 +63,7 @@ public class AddActivity extends AppCompatActivity
 
         populateSpinnerCategories();
 
-        buttonCamera.setOnClickListener(new View.OnClickListener(){
+        buttonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
                 openCamera();
@@ -105,7 +104,7 @@ public class AddActivity extends AppCompatActivity
                 newProductCategory.length() != 0 &&
                 newProductExpiryData.length() != 0 &&
                 newProductQuantity.length() != 0 &&
-                newProductImage != null){
+                newProductImage != null) {
                     AddProduct(newProductName, newProductCategory, newProductExpiryData, newProductQuantity, newProductImage);
                     productName.setText("");
                     productExpiryDate.setText("");
@@ -124,11 +123,12 @@ public class AddActivity extends AppCompatActivity
     private void AddProduct(String newProductName, String newProductCategory, String newProductExpiryData, String newProductQuantity, Bitmap newProductImage) {
         boolean isInserted = keepFreshDatabaseHelper.addProduct(newProductName, newProductCategory, newProductExpiryData, newProductQuantity, newProductImage);
 
-        if(isInserted) {
+        if(isInserted){
             Toast.makeText(AddActivity.this, "Product added", Toast.LENGTH_SHORT).show();
         }
-        else
+        else{
             Toast.makeText(AddActivity.this, "Product not added", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void increase() {
@@ -149,15 +149,13 @@ public class AddActivity extends AppCompatActivity
         ArrayAdapter<String> categoriesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getAllCategories());
         categoriesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         productCategory.setAdapter(categoriesAdapter);
+        categoriesAdapter.notifyDataSetChanged();
     }
-    public List<String> getAllCategories()
-    {
+
+    public List<String> getAllCategories() {
         Cursor res = keepFreshDatabaseHelper.getAllCategories();
-        if(res.getCount() == 0)
-        {
-            //show message no data available
-        }
         List<String> values = new ArrayList<>();
+
         while (res.moveToNext()) {
             if (!res.getString(1).equals("All")) {
                 values.add(res.getString(1));
@@ -173,17 +171,14 @@ public class AddActivity extends AppCompatActivity
         startActivity(intent);
     }
 
-    private void openCamera()
-    {
-        try
-        {
+    private void openCamera() {
+        try {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             if(intent.resolveActivity(getPackageManager()) != null) {
                 startActivityForResult(intent, CAMERA_REQUEST_CODE);
             }
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             Toast.makeText(AddActivity.this, e.toString(), Toast.LENGTH_LONG).show();
 
         }
@@ -191,11 +186,9 @@ public class AddActivity extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK)
-        {
+        if(requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             image = (Bitmap) extras.get("data");
             imageViewCamera.setImageBitmap(image);
