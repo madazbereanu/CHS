@@ -26,15 +26,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.TimeZone;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+{
     private Spinner spinnerCategories;
     private ImageButton buttonAdd;
     private ListView listViewProducts;
 
     private KeepFreshDatabaseHelper keepFreshDatabaseHelper;
 
+    private String messageString;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -48,7 +51,8 @@ public class MainActivity extends AppCompatActivity {
 
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 Intent intent = new Intent(MainActivity.this, AddActivity.class);
                 startActivity(intent);
             }
@@ -56,7 +60,8 @@ public class MainActivity extends AppCompatActivity {
 
         spinnerCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
                 String item = parent.getItemAtPosition(position).toString();
                 viewAllProductsFromCategory(item);
                 // Showing selected spinner item
@@ -64,7 +69,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onNothingSelected(AdapterView<?> parent)
+            {
 
             }
         });
@@ -73,22 +79,26 @@ public class MainActivity extends AppCompatActivity {
         expiredData();
     }
 
-    private void expiredData(){
+    private void expiredData()
+    {
         Cursor res = keepFreshDatabaseHelper.getAllProducts();
         List<String> productsName = new ArrayList<>();
         List<String> productsExpiredData = new ArrayList<>();
 
-        while (res.moveToNext()){
+        while (res.moveToNext())
+        {
             productsName.add(res.getString(0));
             productsExpiredData.add(res.getString(3));
         }
 
-        for(int i = 0; i < productsExpiredData.size(); i++){
-            if(isAlmostExpired(productsExpiredData.get(i))){
+        for(int i = 0; i < productsExpiredData.size(); i++)
+        {
+            if(isAlmostExpired(productsExpiredData.get(i), productsName.get(i)))
+            {
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "notificationExpired")
                         .setSmallIcon(R.drawable.ic_baseline_calendar_today_24)
                         .setContentTitle("Keep Fresh")
-                        .setContentText("Please check the product with name: " + productsName.get(i))
+                        .setContentText(messageString)
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT);
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
                 notificationManager.notify(100, builder.build());
@@ -96,7 +106,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private boolean isAlmostExpired(String expiredData){
+    private boolean isAlmostExpired(String expiredData, String productName)
+    {
+        messageString = null;
         String[] elements = expiredData.split("/");
         int expiredDay = Integer.parseInt(elements[0]);
         int expiredMonth = Integer.parseInt(elements[1]);
@@ -108,13 +120,25 @@ public class MainActivity extends AppCompatActivity {
 
         if((expiredYear - year) == 0)
             if((expiredMonth - month) == 0)
-                if((expiredDay - day) <= 3)
+            {
+                if (((expiredDay - day) >= 0) && ((expiredDay - day) <= 3))
+                {
+                    messageString = "The product " + productName + " will expire soon";
                     return true;
+                }
+                if ((expiredDay - day) < 0)
+                {
+                    messageString = "The product " + productName + " is expired";
+                    return true;
+                }
+            }
         return false;
     }
 
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    private void createNotificationChannel()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
             CharSequence name = "KeepFreshChannel";
             String description = "Channel for expiry data";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
@@ -126,18 +150,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void populateSpinnerCategories() {
+    private void populateSpinnerCategories()
+    {
         ArrayAdapter<String> categoriesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getAllCategories());
         categoriesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategories.setAdapter(categoriesAdapter);
         categoriesAdapter.notifyDataSetChanged();
     }
 
-    public List<String> getAllCategories() {
+    public List<String> getAllCategories()
+    {
         Cursor res = keepFreshDatabaseHelper.getAllCategories();
         List<String> values = new ArrayList<>();
 
-        while (res.moveToNext()) {
+        while (res.moveToNext())
+        {
             values.add(res.getString(1));
         }
 
@@ -145,20 +172,26 @@ public class MainActivity extends AppCompatActivity {
         return values;
     }
 
-    public void viewAllProductsFromCategory(String categoryName) {
+    public void viewAllProductsFromCategory(String categoryName)
+    {
         Cursor res = keepFreshDatabaseHelper.getAllProducts();
         List<String> values = new ArrayList<>();
         List<String> values1 = new ArrayList<>();
 
-        if(categoryName.equals("All")){
-            while (res.moveToNext()){
+        if(categoryName.equals("All"))
+        {
+            while (res.moveToNext())
+            {
                 values.add(res.getString(0));
                 values1.add(res.getString(1));
             }
         }
-        else {
-            while (res.moveToNext()) {
-                if (categoryName.equals(res.getString(2))) {
+        else
+        {
+            while (res.moveToNext())
+            {
+                if (categoryName.equals(res.getString(2)))
+                {
                     values.add(res.getString(0));
                     values1.add(res.getString(1));
                 }
@@ -166,13 +199,15 @@ public class MainActivity extends AppCompatActivity {
         }
         listViewProducts.setAdapter(new ProductsCustomAdapter(this, values, values1));
     }
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         int id = item.getItemId();
 
         if(id == R.id.setting)
@@ -182,7 +217,8 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             return false;
         }
-        if(id == R.id.shopping_list) {
+        if(id == R.id.shopping_list)
+        {
             Toast.makeText(getApplicationContext(), "Shopping list", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(MainActivity.this, ShoppingListActivity.class);
             startActivity(intent);

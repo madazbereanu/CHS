@@ -11,14 +11,16 @@ import android.widget.Toast;
 
 import java.util.List;
 
-public class EditCategoriesCustomAdapter extends BaseAdapter {
+public class EditCategoriesCustomAdapter extends BaseAdapter
+{
     //TO DO: add functionality to edit and remove button
     private static LayoutInflater inflater = null;
 
     private Context context;
     private List<String> categoryName;
 
-    public EditCategoriesCustomAdapter(Context context, List<String> categoryName) {
+    public EditCategoriesCustomAdapter(Context context, List<String> categoryName)
+    {
         this.categoryName = categoryName;
         this.context = context;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -39,14 +41,16 @@ public class EditCategoriesCustomAdapter extends BaseAdapter {
         return position;
     }
 
-    public class Holder {
+    public class Holder
+    {
         TextView rowEditCategories;
         ImageButton saveEditCategories;
         ImageButton removeEditCategories;
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent)
+    {
         Holder holder = new Holder();
         View rowView;
 
@@ -60,11 +64,17 @@ public class EditCategoriesCustomAdapter extends BaseAdapter {
 
         rowView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
+            public void onClick(View v)
+            {
                 Toast.makeText(context, "You Clicked "+categoryName.get(position), Toast.LENGTH_LONG).show();
             }
         });
+        
         return rowView;
+    }
+    private void deleteProduct(String productName, Context context)
+    {
+        KeepFreshDatabaseHelper keepFreshDatabaseHelper = KeepFreshDatabaseHelper.getInstance(context);
+        keepFreshDatabaseHelper.deleteCategory(productName);
     }
 }

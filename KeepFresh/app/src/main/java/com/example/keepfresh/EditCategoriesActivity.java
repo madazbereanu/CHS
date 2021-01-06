@@ -16,7 +16,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class EditCategoriesActivity extends AppCompatActivity {
+public class EditCategoriesActivity extends AppCompatActivity
+{
     //hardcoded values for categories
     private static final List<String> CATEGORIES = Arrays.asList("All", "Drink", "Food");
 
@@ -29,7 +30,8 @@ public class EditCategoriesActivity extends AppCompatActivity {
     private KeepFreshDatabaseHelper keepFreshDatabaseHelper;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_categories);
 
@@ -39,22 +41,26 @@ public class EditCategoriesActivity extends AppCompatActivity {
         addNewCategoryButton = findViewById(R.id.add_new_category_button);
         listViewCategories = findViewById(R.id.list_view_categories);
 
-        keepFreshDatabaseHelper = KeepFreshDatabaseHelper.getInstance(this);
+        keepFreshDatabaseHelper = KeepFreshDatabaseHelper.getInstance(context);
 
         //add hardcoded categories
-        for (String category: CATEGORIES) {
+        for (String category: CATEGORIES)
+        {
             AddData(category);
         }
 
         addNewCategoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 String newEntry = categoryName.getText().toString();
-                if(categoryName.length() != 0) {
+                if(categoryName.length() != 0)
+                {
                     AddData(newEntry);
                     categoryName.setText("");
                 }
-                else {
+                else
+                {
                     Toast.makeText(EditCategoriesActivity.this,"Must put something in text field!", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -63,23 +69,28 @@ public class EditCategoriesActivity extends AppCompatActivity {
         viewAllCategories();
     }
 
-    public void AddData(String newEntry) {
+    public void AddData(String newEntry)
+    {
         boolean isInserted = keepFreshDatabaseHelper.addCategory(newEntry);
 
-        if(isInserted) {
+        if(isInserted)
+        {
             Toast.makeText(EditCategoriesActivity.this, "Category added", Toast.LENGTH_SHORT).show();
             viewAllCategories();
         }
-        else {
+        else
+        {
             Toast.makeText(EditCategoriesActivity.this, "Category not added", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void viewAllCategories() {
+    public void viewAllCategories()
+    {
         Cursor res = keepFreshDatabaseHelper.getAllCategories();
         List<String> values = new ArrayList<>();
 
-        while (res.moveToNext()) {
+        while (res.moveToNext())
+        {
             values.add(res.getString(1));
         }
         Collections.sort(values);

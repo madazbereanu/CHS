@@ -17,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AddActivity extends AppCompatActivity
@@ -93,7 +94,8 @@ public class AddActivity extends AppCompatActivity
 
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 String newProductName = productName.getText().toString();
                 String newProductCategory = productCategory.getSelectedItem().toString();
                 String newProductExpiryData = productExpiryDate.getText().toString();
@@ -104,7 +106,8 @@ public class AddActivity extends AppCompatActivity
                 newProductCategory.length() != 0 &&
                 newProductExpiryData.length() != 0 &&
                 newProductQuantity.length() != 0 &&
-                newProductImage != null) {
+                newProductImage != null)
+                {
                     AddProduct(newProductName, newProductCategory, newProductExpiryData, newProductQuantity, newProductImage);
                     productName.setText("");
                     productExpiryDate.setText("");
@@ -117,78 +120,95 @@ public class AddActivity extends AppCompatActivity
                 }
             }
         });
-
     }
 
-    private void AddProduct(String newProductName, String newProductCategory, String newProductExpiryData, String newProductQuantity, Bitmap newProductImage) {
+    private void AddProduct(String newProductName, String newProductCategory, String newProductExpiryData,
+                            String newProductQuantity, Bitmap newProductImage)
+    {
         boolean isInserted = keepFreshDatabaseHelper.addProduct(newProductName, newProductCategory, newProductExpiryData, newProductQuantity, newProductImage);
 
-        if(isInserted){
+        if(isInserted)
+        {
             Toast.makeText(AddActivity.this, "Product added", Toast.LENGTH_SHORT).show();
         }
-        else{
+        else
+        {
             Toast.makeText(AddActivity.this, "Product not added", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void increase() {
+    private void increase()
+    {
         int quantity = Integer.parseInt(productQuantity.getText().toString());
         quantity ++;
         productQuantity.setText(String.valueOf(quantity));
     }
 
-    private void decrease() {
+    private void decrease()
+    {
         int quantity = Integer.parseInt(productQuantity.getText().toString());
-        if(quantity > 0) {
+        if(quantity > 0)
+        {
             quantity--;
             productQuantity.setText(String.valueOf(quantity));
         }
     }
 
-    private void populateSpinnerCategories() {
+    private void populateSpinnerCategories()
+    {
         ArrayAdapter<String> categoriesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getAllCategories());
         categoriesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         productCategory.setAdapter(categoriesAdapter);
         categoriesAdapter.notifyDataSetChanged();
     }
 
-    public List<String> getAllCategories() {
+    public List<String> getAllCategories()
+    {
         Cursor res = keepFreshDatabaseHelper.getAllCategories();
         List<String> values = new ArrayList<>();
 
-        while (res.moveToNext()) {
-            if (!res.getString(1).equals("All")) {
+        while (res.moveToNext())
+        {
+            if (!res.getString(1).equals("All"))
+            {
                 values.add(res.getString(1));
             }
         }
-
+        Collections.sort(values);
         return values;
     }
 
 
-    private void openMainActivity() {
+    private void openMainActivity()
+    {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
-    private void openCamera() {
-        try {
+    private void openCamera()
+    {
+        try
+        {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if(intent.resolveActivity(getPackageManager()) != null) {
+            if(intent.resolveActivity(getPackageManager()) != null)
+            {
                 startActivityForResult(intent, CAMERA_REQUEST_CODE);
             }
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             Toast.makeText(AddActivity.this, e.toString(), Toast.LENGTH_LONG).show();
 
         }
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
+        if(requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK)
+        {
             Bundle extras = data.getExtras();
             image = (Bitmap) extras.get("data");
             imageViewCamera.setImageBitmap(image);

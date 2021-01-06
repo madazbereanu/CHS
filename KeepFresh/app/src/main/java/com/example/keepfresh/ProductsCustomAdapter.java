@@ -14,15 +14,16 @@ import android.widget.Toast;
 
 import java.util.List;
 
-public class ProductsCustomAdapter extends BaseAdapter {
-
+public class ProductsCustomAdapter extends BaseAdapter
+{
     private static LayoutInflater inflater = null;
 
     private Context context;
     private List<String> productNameList;
     private List<String> productImageList;
 
-    public ProductsCustomAdapter(Context context, List<String> productName, List<String> productImage){
+    public ProductsCustomAdapter(Context context, List<String> productName, List<String> productImage)
+    {
         this.context = context;
         this.productNameList = productName;
         this.productImageList = productImage;
@@ -45,12 +46,14 @@ public class ProductsCustomAdapter extends BaseAdapter {
         return position;
     }
 
-    class Holder{
+    class Holder
+    {
         TextView productName;
         ImageView productImage;
     }
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent)
+    {
         Holder holder = new Holder();
         View rowView;
 
@@ -64,19 +67,23 @@ public class ProductsCustomAdapter extends BaseAdapter {
 
         rowView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
+            public void onClick(View v)
+            {
                 Toast.makeText(context, "You Clicked "+productNameList.get(position), Toast.LENGTH_LONG).show();
             }
         });
 
         return rowView;
     }
-    private static Bitmap stringToBitmap(String encodedString) {
-        try {
+    private static Bitmap stringToBitmap(String encodedString)
+    {
+        try
+        {
             byte[] encodeByte = Base64.decode(encodedString, Base64.DEFAULT);
             return BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             e.getMessage();
             return null;
         }

@@ -7,13 +7,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-public class SettingsActivity extends AppCompatActivity {
-
+public class SettingsActivity extends AppCompatActivity
+{
     private TextView editCategories;
     private TextView help;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
@@ -22,25 +23,30 @@ public class SettingsActivity extends AppCompatActivity {
 
         editCategories.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 openEditCategories();
             }
         });
 
-        help.setOnClickListener(new View.OnClickListener() {
+        help.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 openHelp();
             }
         });
     }
 
-    public void openEditCategories(){
+    public void openEditCategories()
+    {
         Intent intent = new Intent(this, EditCategoriesActivity.class);
         startActivity(intent);
     }
 
-    private void openHelp() {
+    private void openHelp()
+    {
         Intent intent = new Intent(this, HelpActivity.class);
         startActivity(intent);
     }

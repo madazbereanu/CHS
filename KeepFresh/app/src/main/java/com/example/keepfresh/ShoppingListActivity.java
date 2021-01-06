@@ -22,7 +22,8 @@ public class ShoppingListActivity extends AppCompatActivity
     private ArrayAdapter<String> adp;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_list);
 
@@ -34,7 +35,8 @@ public class ShoppingListActivity extends AppCompatActivity
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 String newEntry = itemName.getText().toString();
                 if(itemName.length() != 0)
                 {
@@ -48,18 +50,20 @@ public class ShoppingListActivity extends AppCompatActivity
             }
         });
 
-        try {
+        try
+        {
             List<Post> posts = databaseHelper.getAllPosts();
             List<String> items = new ArrayList<>();
-            for (Post post : posts) {
+            for (Post post : posts)
+            {
                 items.add(post.item.name);
             }
             adp = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, items);
             listView.setAdapter(adp);
             adp.notifyDataSetChanged();
-        }catch (Exception e)
+        }
+        catch (Exception e)
         {
-
         }
     }
 
@@ -83,15 +87,17 @@ public class ShoppingListActivity extends AppCompatActivity
             Toast.makeText(ShoppingListActivity.this,"Something went wrong", Toast.LENGTH_SHORT).show();
 
         }
-        try {
+        try
+        {
             List<Post> posts = databaseHelper.getAllPosts();
             List<String> items = new ArrayList<>();
-            for (Post post : posts) {
+            for (Post post : posts)
+            {
                 items.add(post.item.name);
             }
-        }catch (Exception e)
+        }
+        catch (Exception e)
         {
-
         }
     }
 }
