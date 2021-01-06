@@ -11,6 +11,9 @@ import android.widget.Toast;
 
 import java.util.List;
 
+/**
+ * The class will help to add two buttons for each item from view list
+ */
 public class EditCategoriesCustomAdapter extends BaseAdapter
 {
     //TO DO: add functionality to edit and remove button

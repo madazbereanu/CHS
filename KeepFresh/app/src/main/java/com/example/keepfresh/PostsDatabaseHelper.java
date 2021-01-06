@@ -10,6 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
+
+/**
+ * The method manages the database
+ */
 public class PostsDatabaseHelper extends SQLiteOpenHelper
 {
     // Database Info

@@ -26,6 +26,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.TimeZone;
 
+/**
+ * This class manages main activity
+ */
 public class MainActivity extends AppCompatActivity
 {
     private Spinner spinnerCategories;
@@ -35,6 +38,7 @@ public class MainActivity extends AppCompatActivity
     private KeepFreshDatabaseHelper keepFreshDatabaseHelper;
 
     private String messageString;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -79,6 +83,9 @@ public class MainActivity extends AppCompatActivity
         expiredData();
     }
 
+    /**
+     * Create notification for products which will expire
+     */
     private void expiredData()
     {
         Cursor res = keepFreshDatabaseHelper.getAllProducts();
@@ -106,10 +113,16 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private boolean isAlmostExpired(String expiredData, String productName)
+    /**
+     * This method calculates the expired date
+     * @param expiredDate
+     * @param productName
+     * @return true if product is expired or almost expired, false in other case
+     */
+    private boolean isAlmostExpired(String expiredDate, String productName)
     {
         messageString = null;
-        String[] elements = expiredData.split("/");
+        String[] elements = expiredDate.split("/");
         int expiredDay = Integer.parseInt(elements[0]);
         int expiredMonth = Integer.parseInt(elements[1]);
         int expiredYear = Integer.parseInt(elements[2]);
@@ -135,12 +148,15 @@ public class MainActivity extends AppCompatActivity
         return false;
     }
 
+    /**
+     * This method creates notification channel
+     */
     private void createNotificationChannel()
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         {
             CharSequence name = "KeepFreshChannel";
-            String description = "Channel for expiry data";
+            String description = "Channel for expiry date";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel("notificationExpired", name, importance);
             channel.setDescription(description);
@@ -150,6 +166,9 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * This method populates the spinner with categories from database
+     */
     private void populateSpinnerCategories()
     {
         ArrayAdapter<String> categoriesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getAllCategories());
@@ -158,6 +177,10 @@ public class MainActivity extends AppCompatActivity
         categoriesAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * This method gets all categories from database
+     * @return a list all names of categories
+     */
     public List<String> getAllCategories()
     {
         Cursor res = keepFreshDatabaseHelper.getAllCategories();
@@ -172,6 +195,10 @@ public class MainActivity extends AppCompatActivity
         return values;
     }
 
+    /**
+     * This method gets all products from a specific category
+     * @param categoryName
+     */
     public void viewAllProductsFromCategory(String categoryName)
     {
         Cursor res = keepFreshDatabaseHelper.getAllProducts();
@@ -199,12 +226,23 @@ public class MainActivity extends AppCompatActivity
         }
         listViewProducts.setAdapter(new ProductsCustomAdapter(this, values, values1));
     }
+
+    /**
+     * This method creates the menu
+     * @param menu
+     * @return
+     */
     public boolean onCreateOptionsMenu(Menu menu)
     {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
 
+    /**
+     * This method helps to navigate to Settings Activity and Shopping List Activity
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {

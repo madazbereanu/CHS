@@ -75,6 +75,7 @@ public class ProductsCustomAdapter extends BaseAdapter
 
         return rowView;
     }
+
     private static Bitmap stringToBitmap(String encodedString)
     {
         try

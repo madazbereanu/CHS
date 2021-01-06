@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+/**
+ * The method manages help activity
+ */
 public class HelpActivity extends AppCompatActivity
 {
     @Override

@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * This class helps to add a new product
+ */
 public class AddActivity extends AppCompatActivity
 {
     private static final int CAMERA_REQUEST_CODE = 1;
@@ -62,8 +65,10 @@ public class AddActivity extends AppCompatActivity
 
         keepFreshDatabaseHelper = KeepFreshDatabaseHelper.getInstance(this);
 
+        //populate spinner with all categories from database
         populateSpinnerCategories();
 
+        //by pressing the image button will open the camera
         buttonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
@@ -71,6 +76,7 @@ public class AddActivity extends AppCompatActivity
             }
         });
 
+        //by pressing the button Cancel will go back to the Main
         buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,6 +84,7 @@ public class AddActivity extends AppCompatActivity
             }
         });
 
+        //by pressing the button decrease, will decrease the value from its field
         buttonDecrease.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,6 +92,7 @@ public class AddActivity extends AppCompatActivity
             }
         });
 
+        //by pressing the button increase, will increase the value from its field
         buttonIncrease.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,19 +104,21 @@ public class AddActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
+                //get fields content
                 String newProductName = productName.getText().toString();
                 String newProductCategory = productCategory.getSelectedItem().toString();
                 String newProductExpiryData = productExpiryDate.getText().toString();
                 String newProductQuantity = productQuantity.getText().toString();
                 Bitmap newProductImage = image;
 
+                //check if the fields are completed
                 if(newProductName.length() != 0 &&
                 newProductCategory.length() != 0 &&
                 newProductExpiryData.length() != 0 &&
                 newProductQuantity.length() != 0 &&
                 newProductImage != null)
                 {
-                    AddProduct(newProductName, newProductCategory, newProductExpiryData, newProductQuantity, newProductImage);
+                    addProduct(newProductName, newProductCategory, newProductExpiryData, newProductQuantity, newProductImage);
                     productName.setText("");
                     productExpiryDate.setText("");
                     productQuantity.setText("");
@@ -122,7 +132,16 @@ public class AddActivity extends AppCompatActivity
         });
     }
 
-    private void AddProduct(String newProductName, String newProductCategory, String newProductExpiryData,
+    /**
+     * This method adds a new product to database
+     *
+     * @param newProductName
+     * @param newProductCategory
+     * @param newProductExpiryData
+     * @param newProductQuantity
+     * @param newProductImage
+     */
+    private void addProduct(String newProductName, String newProductCategory, String newProductExpiryData,
                             String newProductQuantity, Bitmap newProductImage)
     {
         boolean isInserted = keepFreshDatabaseHelper.addProduct(newProductName, newProductCategory, newProductExpiryData, newProductQuantity, newProductImage);
@@ -137,6 +156,9 @@ public class AddActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * This method increases the value of specific field (quantity field)
+     */
     private void increase()
     {
         int quantity = Integer.parseInt(productQuantity.getText().toString());
@@ -144,6 +166,9 @@ public class AddActivity extends AppCompatActivity
         productQuantity.setText(String.valueOf(quantity));
     }
 
+    /**
+     * This method decreases the value of specific field (quantity field), just if it has a value bigger than 0
+     */
     private void decrease()
     {
         int quantity = Integer.parseInt(productQuantity.getText().toString());
@@ -154,6 +179,9 @@ public class AddActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * This method populates the spinner with categories from database
+     */
     private void populateSpinnerCategories()
     {
         ArrayAdapter<String> categoriesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getAllCategories());
@@ -162,6 +190,10 @@ public class AddActivity extends AppCompatActivity
         categoriesAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * This method gets all categories from database
+     * @return a list all names of categories (less 'All' category)
+     */
     public List<String> getAllCategories()
     {
         Cursor res = keepFreshDatabaseHelper.getAllCategories();
@@ -178,13 +210,18 @@ public class AddActivity extends AppCompatActivity
         return values;
     }
 
-
+    /**
+     * This methods opens the main activity
+     */
     private void openMainActivity()
     {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * This method tries to open the camera
+     */
     private void openCamera()
     {
         try
@@ -198,10 +235,15 @@ public class AddActivity extends AppCompatActivity
         catch (Exception e)
         {
             Toast.makeText(AddActivity.this, e.toString(), Toast.LENGTH_LONG).show();
-
         }
     }
 
+    /**
+     * This method sets the image taken with the phone camera into image view
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {

@@ -13,6 +13,9 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+     * The method manages the database
+ */
 public class KeepFreshDatabaseHelper extends SQLiteOpenHelper
 {
     private static final float PREFERRED_WIDTH = 250;
@@ -110,6 +113,15 @@ public class KeepFreshDatabaseHelper extends SQLiteOpenHelper
         return true;
     }
 
+    /**
+     * This method tries to add a product with specific fields
+     * @param nameProduct
+     * @param categoryProduct
+     * @param expiryDataProduct
+     * @param quantityProduct
+     * @param image
+     * @return
+     */
     public boolean addProduct(String nameProduct, String categoryProduct, String expiryDataProduct,
                               String quantityProduct, Bitmap image)
     {
@@ -141,6 +153,10 @@ public class KeepFreshDatabaseHelper extends SQLiteOpenHelper
         return true;
     }
 
+    /**
+     * This method gets all categories
+     * @return all categories from database
+     */
     public Cursor getAllCategories()
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -148,6 +164,10 @@ public class KeepFreshDatabaseHelper extends SQLiteOpenHelper
         return res;
     }
 
+    /**
+     * This method gets all names categories
+     * @return all names categories from database
+     */
     public Cursor getCategoriesName()
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -155,6 +175,10 @@ public class KeepFreshDatabaseHelper extends SQLiteOpenHelper
         return res;
     }
 
+    /**
+     * This method gets all products
+     * @return all products from database
+     */
     public Cursor getAllProducts()
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -162,6 +186,11 @@ public class KeepFreshDatabaseHelper extends SQLiteOpenHelper
         return res;
     }
 
+    /**
+     * This method converts bitmap to string
+     * @param bitmap
+     * @return a string
+     */
     private static String bitmapToString(Bitmap bitmap)
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -170,6 +199,11 @@ public class KeepFreshDatabaseHelper extends SQLiteOpenHelper
         return Base64.encodeToString(b, Base64.DEFAULT);
     }
 
+    /**
+     * This method resize the bitmap
+     * @param bitmap
+     * @return resized bitmap
+     */
     public static Bitmap resizeBitmap(Bitmap bitmap)
     {
         int width = bitmap.getWidth();
@@ -185,6 +219,9 @@ public class KeepFreshDatabaseHelper extends SQLiteOpenHelper
         return resizedBitmap;
     }
 
+    /**
+     * This method deletes all categories from database
+     */
     public void deleteAllCategories()
     {
         SQLiteDatabase db = getWritableDatabase();
@@ -195,6 +232,9 @@ public class KeepFreshDatabaseHelper extends SQLiteOpenHelper
         db.endTransaction();
     }
 
+    /**
+     * This method deletes all products from database
+     */
     public void deleteAllProducts()
     {
         SQLiteDatabase db = getWritableDatabase();
@@ -205,6 +245,11 @@ public class KeepFreshDatabaseHelper extends SQLiteOpenHelper
         db.endTransaction();
     }
 
+    /**
+     * This method deletes a category with categoryName name
+     * @param categoryName
+     * @return
+     */
     public boolean deleteCategory(String categoryName)
     {
         SQLiteDatabase db = this.getWritableDatabase();

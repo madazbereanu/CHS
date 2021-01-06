@@ -95,6 +95,10 @@ public class ShoppingListActivity extends AppCompatActivity
             {
                 items.add(post.item.name);
             }
+
+            adp = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, items);
+            listView.setAdapter(adp);
+            adp.notifyDataSetChanged();
         }
         catch (Exception e)
         {

@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+/**
+ * This class manage activities
+ */
 public class SettingsActivity extends AppCompatActivity
 {
     private TextView editCategories;

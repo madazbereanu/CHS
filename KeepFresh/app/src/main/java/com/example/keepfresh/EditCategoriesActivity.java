@@ -16,6 +16,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The class will manage the functionalities  for edit categories activity
+ */
 public class EditCategoriesActivity extends AppCompatActivity
 {
     //hardcoded values for categories
@@ -46,7 +49,7 @@ public class EditCategoriesActivity extends AppCompatActivity
         //add hardcoded categories
         for (String category: CATEGORIES)
         {
-            AddData(category);
+            addData(category);
         }
 
         addNewCategoryButton.setOnClickListener(new View.OnClickListener() {
@@ -56,7 +59,7 @@ public class EditCategoriesActivity extends AppCompatActivity
                 String newEntry = categoryName.getText().toString();
                 if(categoryName.length() != 0)
                 {
-                    AddData(newEntry);
+                    addData(newEntry);
                     categoryName.setText("");
                 }
                 else
@@ -69,7 +72,11 @@ public class EditCategoriesActivity extends AppCompatActivity
         viewAllCategories();
     }
 
-    public void AddData(String newEntry)
+    /**
+     * This method adds a new category to database
+     * @param newEntry
+     */
+    public void addData(String newEntry)
     {
         boolean isInserted = keepFreshDatabaseHelper.addCategory(newEntry);
 
@@ -84,6 +91,9 @@ public class EditCategoriesActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * This method sets all categories to list view using adaptor
+     */
     public void viewAllCategories()
     {
         Cursor res = keepFreshDatabaseHelper.getAllCategories();
